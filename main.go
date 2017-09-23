@@ -15,12 +15,16 @@ func main() {
 	http.HandleFunc("/room", ServeHTTP)
 
 	log.Println("Webサーバーを開始します。ポート:5000")
-	if err := http.ListenAndServe("5000", nil); err != nil {
+	if err := http.ListenAndServe(":5000", nil); err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 }
 
-var upgrader = &websocket.Upgrader{ReadBufferSize: socketBufferSize, WriteBufferSize: socketBufferSize}
+var upgrader = &websocket.Upgrader{
+	ReadBufferSize:  socketBufferSize,
+	WriteBufferSize: socketBufferSize,
+	CheckOrigin:     func(r *http.Request) bool { return true },
+}
 
 func ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
